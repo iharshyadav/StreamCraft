@@ -4,6 +4,7 @@ import "./globals.css";
 import { ClerkProvider } from "@clerk/nextjs";
 import { dark } from "@clerk/themes";
 import { ThemeProvider } from "@/components/theme";
+import ReactQueryProvider from "@/react-query";
 
 export const metadata: Metadata = {
   title: "StreamCraft",
@@ -26,7 +27,7 @@ export default function RootLayout({
             defaultTheme="dark"
             disableTransitionOnChange
           >
-            {children}
+            <ReactQueryProvider>{children}</ReactQueryProvider>
           </ThemeProvider>
         </body>
       </html>
