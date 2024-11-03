@@ -18,6 +18,10 @@ import { Button } from '@/components/ui/button'
 import Loader from '../loader'
 import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
 import { getNotifications } from '@/actions/user'
+import { useQueryComponennt } from '@/hooks/useQuery'
+import { WorkSpaceProps } from '@/types/index.types'
+import Model from '../model/model'
+import { PlusCircle } from 'lucide-react'
 type Props = {
   activeWorkspaceId: string
 }
@@ -26,6 +30,11 @@ const Sidebar = ({ activeWorkspaceId }: Props) => {
 
   const router = useRouter()
   const pathName = usePathname()
+
+
+  const {data , isFetched} = useQueryComponennt(['user-workspaces'] , getWorkSpaces)
+
+  const {data : workSpace} = data as WorkSpaceProps
 
   const onChangeActiveWorkspace = (value: string) => {
     router.push(`/dashboard/${value}`)
@@ -53,18 +62,53 @@ const Sidebar = ({ activeWorkspaceId }: Props) => {
           <SelectGroup>
             <SelectLabel>Workspaces</SelectLabel>
             <Separator />
-         
+           {
+            workSpace.workspace.map((workspace) => (
+              <SelectItem key={workspace.id} value={workspace.id}> 
+                {workspace.name}
+              </SelectItem>
+            ))
+           }
+            {workSpace.members.length > 0 &&
+              workSpace.members.map(
+                (workspace) =>
+                  workspace.WorkSpace && (
+                    <SelectItem
+                      value={workspace.WorkSpace.id}
+                      key={workspace.WorkSpace.id}
+                    >
+                      {workspace.WorkSpace.name}
+                    </SelectItem>
+                  )
+              )}
           </SelectGroup>
         </SelectContent>
       </Select>
-      
+      <Model
+      trigger={
+        <span className="text-sm cursor-pointer flex items-center justify-center bg-neutral-800/90  hover:bg-neutral-800/60 w-full rounded-sm p-[5px] gap-2">
+          <PlusCircle
+            size={15}
+            className="text-neutral-800/90 fill-neutral-500"
+          />
+          <span className="text-neutral-400 font-semibold text-xs">
+            Invite To Workspace
+          </span>
+        </span>
+      }
+      title="Invite To Workspace"
+      description="Invite other users to your workspace"
+    >
+      search
+      {/* <Search workspaceId={activeWorkspaceId} /> */}
+      </Model>
       <p className="w-full text-[#9D9D9D] font-bold mt-4">Menu</p>
       <nav className="w-full">
         
       </nav>
       <Separator className="w-4/5" />
       <p className="w-full text-[#9D9D9D] font-bold mt-4 ">Workspaces</p>
-
+   
       <nav className="w-full">
         <ul className="h-[150px] overflow-auto overflow-x-hidden fade-layer">
         </ul>
